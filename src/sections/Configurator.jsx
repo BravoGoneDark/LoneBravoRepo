@@ -1,0 +1,1 @@
+export default function Configurator() { return <section id="configurator" />; }

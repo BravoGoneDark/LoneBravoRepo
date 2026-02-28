@@ -1,0 +1,1 @@
+export default function Performance() { return <section id="performance" />; }
