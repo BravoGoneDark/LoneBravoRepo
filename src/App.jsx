@@ -122,9 +122,8 @@ export default function App() {
 
   // Called by IntroOverlay when its full animation sequence ends
   const handleIntroComplete = useCallback(() => {
-    setIntroComplete(true);
-    // Small buffer so logo animation starts after overlay wipe finishes
-    setTimeout(() => setLogoReady(true), 300);
+    setIntroComplete(true);      // site fades in immediately — no black gap
+    setTimeout(() => setLogoReady(true), 100);  // logo starts corner travel almost instantly
   }, []);
 
   // Called by a car card in Models when Learn More is clicked
@@ -173,9 +172,14 @@ export default function App() {
       {/* ── Main site ───────────────────────────────────── */}
       {/* Hidden (opacity 0) until intro finishes, then fades in */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: introComplete ? 1 : 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        initial={{ opacity: 0, y: "100vh", borderRadius: "24px 24px 0 0" }}
+        animate={{
+          opacity: introComplete ? 1 : 0,
+          y: introComplete ? "0vh" : "100vh",
+          borderRadius: introComplete ? "0px" : "24px 24px 0 0",
+        }}
+        transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+        style={{ visibility: introComplete ? "visible" : "hidden" }}
         className="min-h-screen bg-dark-base text-white"
       >
         {/* Sticky navigation — highlights active section */}

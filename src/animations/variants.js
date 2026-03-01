@@ -135,13 +135,8 @@ export const dividerDraw = {
 
 // Era label sliding in from the left on card entry
 export const eraLabelSlide = {
-  hidden:  { opacity: 0, x: -40, letterSpacing: "0.1em" },
-  visible: {
-    opacity: 1,
-    x: 0,
-    letterSpacing: "0.3em",
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-  },
+  hidden:  { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
 // ─────────────────────────────────────────────────────────────

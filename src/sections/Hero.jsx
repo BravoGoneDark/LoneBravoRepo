@@ -331,16 +331,24 @@ export default function Hero({ introComplete }) {
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-2">
-            <span className="font-orbitron text-white/20 text-[9px] tracking-[0.3em] uppercase">
-              Top Speed
-            </span>
-            <span className="font-orbitron text-porsche-gold text-sm font-bold">
-              {featuredCar.stats.topSpeed.value}
-            </span>
-            <span className="font-orbitron text-white/30 text-[9px]">
-              {featuredCar.stats.topSpeed.unit}
-            </span>
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <span className="font-orbitron text-white/20 text-[9px] tracking-[0.3em] uppercase">Legacy</span>
+              <span className="font-orbitron text-porsche-gold text-sm font-bold">75+</span>
+              <span className="font-orbitron text-white/30 text-[9px]">Years</span>
+            </div>
+            <span className="w-px h-4 bg-white/10" />
+            <div className="flex items-center gap-2">
+              <span className="font-orbitron text-white/20 text-[9px] tracking-[0.3em] uppercase">Le Mans</span>
+              <span className="font-orbitron text-porsche-gold text-sm font-bold">16</span>
+              <span className="font-orbitron text-white/30 text-[9px]">Victories</span>
+            </div>
+            <span className="w-px h-4 bg-white/10" />
+            <div className="flex items-center gap-2">
+              <span className="font-orbitron text-white/20 text-[9px] tracking-[0.3em] uppercase">Produced</span>
+              <span className="font-orbitron text-porsche-gold text-sm font-bold">1M+</span>
+              <span className="font-orbitron text-white/30 text-[9px]">Cars</span>
+            </div>
           </div>
         </div>
       </motion.div>

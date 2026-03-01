@@ -34,6 +34,7 @@ export default function PersistentLogo({ ready }) {
         src="/images/porsche-crest.svg"
         alt="Porsche Crest"
         className="w-64 h-64 object-contain"
+        style={{ filter: "brightness(1.1) contrast(1.1)" }}
         draggable={false}
       />
     </motion.div>

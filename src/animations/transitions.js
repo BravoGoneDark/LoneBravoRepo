@@ -89,16 +89,16 @@ export const persistentLogo = {
     x:       "0%",
     y:       "0%",
     scale:   0.35,
-    opacity: 0.15,
-    filter:  ["blur(0px)", "blur(8px)", "blur(0px)"],  // clear → blurry → clear
+    opacity: 0.55,
+    filter:  ["blur(0px)", "blur(8px)", "blur(0px)"],
     transition: {
-      duration: 1.2,
+      duration: 1.1,
       ease:     [0.76, 0, 0.24, 1],
-      delay:    3.4,
+      delay:    0,           // ← was 3.4
       filter: {
-        duration: 1.2,
-        times:    [0, 0.5, 1],   // blur peaks exactly halfway through
-        delay:    3.4,
+        duration: 1.1,
+        times:    [0, 0.5, 1],
+        delay:    0,         // ← was 3.4
       },
     },
   },

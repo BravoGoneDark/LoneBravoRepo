@@ -204,6 +204,7 @@ export const cars = [
       "Nine thousand RPM. Naturally aspirated. Swan-neck rear wing. The 992 GT3 is the most connected, most alive 911 road car money can buy — and it will embarrass purpose-built track cars at the Nürburgring.",
     price:        "$161,100 (2022)",
     image:        "/images/cars/911-gt3-992.jpg",
+    cardImage:    "/images/cars/911-gt3-card.jpg",
     model:        "/models/911-gt3-992.glb",
     accentColor:  "#D5001C",
     engineSound:      "flat-six-na",
