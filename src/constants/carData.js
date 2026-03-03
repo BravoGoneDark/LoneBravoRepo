@@ -1,12 +1,5 @@
 // constants/carData.js
-// Asphalt 8-style stat profiles — metric system — 7 cars across eras
-// Each car includes engineSound (maps to useEngineSound key)
-// and engineCharacter (flavour text displayed in the UI)
-
 export const cars = [
-  // ─────────────────────────────────────────
-  // CLASSICS — 70s
-  // ─────────────────────────────────────────
   {
     id:           "930-turbo",
     name:         "911 Turbo 3.3",
@@ -19,7 +12,7 @@ export const cars = [
       "The 930 Turbo terrified a generation. Sudden, savage turbo lag followed by a wall of boost that overwhelmed its rear-engine chassis — it demanded total respect or it took you off the road.",
     price:        "DM 65,880 (1977)",
     image:        "/images/cars/930-turbo.jpg",
-    model:        "/models/930-turbo.glb",
+    model:        "/models/911-turbo.glb",
     accentColor:  "#C8A96E",
     engineSound:      "flat-six-turbo",
     engineCharacter:  "Laggy turbo spool, then a savage boost surge that overwhelms the rear wheels",
@@ -41,10 +34,6 @@ export const cars = [
       { name: "Copper Brown",    hex: "#7B4F35" },
     ],
   },
-
-  // ─────────────────────────────────────────
-  // CLASSICS — 80s
-  // ─────────────────────────────────────────
   {
     id:           "959",
     name:         "959",
@@ -79,10 +68,6 @@ export const cars = [
       { name: "Grand Prix White", hex: "#F5F5F5" },
     ],
   },
-
-  // ─────────────────────────────────────────
-  // CLASSICS — 90s
-  // ─────────────────────────────────────────
   {
     id:           "993-gt2",
     name:         "911 GT2",
@@ -95,7 +80,7 @@ export const cars = [
       "The 993 GT2 stripped out the AWD, cranked the boost, and handed you the most ferocious 911 of its era. No traction control. No mercy. Just 430 horsepower through the rear wheels.",
     price:        "$175,000 (1995)",
     image:        "/images/cars/993-gt2.jpg",
-    model:        "/models/993-gt2.glb",
+    model:        "/models/911-gt2.glb",
     accentColor:  "#F5D000",
     engineSound:      "flat-six-turbo",
     engineCharacter:  "Raw twin-turbo flat-six with no traction control buffer — every throttle input is a conversation with physics",
@@ -117,7 +102,6 @@ export const cars = [
       { name: "Arctic Silver",    hex: "#C0C0C0" },
     ],
   },
-
   {
     id:           "911-gt1-97",
     name:         "911 GT1",
@@ -130,7 +114,7 @@ export const cars = [
       "Built for one purpose: to win Le Mans. Porsche homologated just 25 road-legal GT1s. Mid-engine, twin-turbo, carbon-bodied — it is the rarest and most extreme 911 ever to wear a number plate.",
     price:        "$1,500,000 (1997)",
     image:        "/images/cars/911-gt1-97.jpg",
-    model:        "/models/911-gt1-97.glb",
+    model:        "/models/911-gt1.glb",
     accentColor:  "#FFFFFF",
     engineSound:      "flat-six-turbo",
     engineCharacter:  "Le Mans-spec twin-turbo six — built to sustain 330 km/h for 24 hours straight",
@@ -150,10 +134,6 @@ export const cars = [
       { name: "Black",       hex: "#0A0A0A" },
     ],
   },
-
-  // ─────────────────────────────────────────
-  // MODERN — 2000s
-  // ─────────────────────────────────────────
   {
     id:           "carrera-gt",
     name:         "Carrera GT",
@@ -188,10 +168,6 @@ export const cars = [
       { name: "Grand Prix White", hex: "#F5F5F5" },
     ],
   },
-
-  // ─────────────────────────────────────────
-  // MODERN — 2020s
-  // ─────────────────────────────────────────
   {
     id:           "911-gt3-992",
     name:         "911 GT3",
@@ -205,7 +181,7 @@ export const cars = [
     price:        "$161,100 (2022)",
     image:        "/images/cars/911-gt3-992.jpg",
     cardImage:    "/images/cars/911-gt3-card.jpg",
-    model:        "/models/911-gt3-992.glb",
+    model:        "/models/911-gt3.glb",
     accentColor:  "#D5001C",
     engineSound:      "flat-six-na",
     engineCharacter:  "Naturally aspirated flat-six with a 9,000 RPM ceiling — a pure mechanical howl that builds linearly to a screaming crescendo",
@@ -227,7 +203,6 @@ export const cars = [
       { name: "Shark Blue",    hex: "#1C3F6E" },
     ],
   },
-
   {
     id:           "taycan-turbo-s",
     name:         "Taycan Turbo S",
@@ -255,18 +230,14 @@ export const cars = [
       transmission: { value: "2-spd PDK (rear axle)"                     },
     },
     colorOptions: [
-      { name: "Frozen Blue",  hex: "#5B8FA8" },
-      { name: "Gentian Blue", hex: "#1C3F6E" },
-      { name: "Carrara White",hex: "#F0EDE8" },
-      { name: "Volcano Grey", hex: "#4A4A4A" },
-      { name: "Night Blue",   hex: "#1A1F3C" },
+      { name: "Frozen Blue",   hex: "#5B8FA8" },
+      { name: "Gentian Blue",  hex: "#1C3F6E" },
+      { name: "Carrara White", hex: "#F0EDE8" },
+      { name: "Volcano Grey",  hex: "#4A4A4A" },
+      { name: "Night Blue",    hex: "#1A1F3C" },
     ],
   },
 ];
-
-// ─────────────────────────────────────────
-// ERA + CLASS METADATA
-// ─────────────────────────────────────────
 
 export const eras = ["70s", "80s", "90s", "2000s", "2020s"];
 
@@ -276,12 +247,6 @@ export const classLabels = {
   B: { label: "Class B", description: "Sport — iconic and thrilling"            },
 };
 
-// ─────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────
-
-export const getCarById  = (id)  => cars.find((car) => car.id === id);
+export const getCarById   = (id)  => cars.find((car) => car.id === id);
 export const getCarsByEra = (era) => cars.filter((car) => car.era === era);
-
-// Featured car shown in Hero
-export const featuredCar = cars[5]; // 992 GT3
+export const featuredCar  = cars[5];

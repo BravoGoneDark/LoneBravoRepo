@@ -1,6 +1,7 @@
 // sections/Models.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence }             from "framer-motion";
+import { useNavigate }                         from "react-router-dom";
 import { cars, eras }                          from "../constants/carData";
 import { initCardStack, cardImageParallax }    from "../animations/gsapanimations";
 import { eraLabelSlide, fadeUp, staggerContainer } from "../animations/variants";
@@ -14,7 +15,6 @@ const CARD_VH = 190;
 // ─────────────────────────────────────────────────────────────
 // ERA FILTER BAR
 // ─────────────────────────────────────────────────────────────
-
 function EraFilterBar({ activeEra, onEraClick, visible }) {
   return (
     <AnimatePresence>
@@ -67,7 +67,6 @@ function EraFilterBar({ activeEra, onEraClick, visible }) {
 // ─────────────────────────────────────────────────────────────
 // STAT PILL
 // ─────────────────────────────────────────────────────────────
-
 function StatPill({ label, value, unit }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -85,12 +84,8 @@ function StatPill({ label, value, unit }) {
 // ─────────────────────────────────────────────────────────────
 // SINGLE CARD
 // ─────────────────────────────────────────────────────────────
-
-function CarCard({ car, index, onLearnMore, cardRef }) {
-  const handleLearnMore = () => {
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (rect) onLearnMore(car, rect);
-  };
+function CarCard({ car, index, cardRef }) {
+  const navigate = useNavigate();
 
   return (
     <div
@@ -154,7 +149,9 @@ function CarCard({ car, index, onLearnMore, cardRef }) {
               <StatPill label="Torque"    value={car.stats.torque.value}       unit={car.stats.torque.unit} />
             </motion.div>
             <motion.div variants={fadeUp} className="flex items-center gap-6">
-              <button onClick={handleLearnMore}
+              {/* ── Navigate to detail page ── */}
+              <button
+                onClick={() => navigate(`/car/${car.id}`)}
                 className="learn-more font-orbitron text-[11px] tracking-[0.25em] uppercase"
                 style={{ padding: "14px 36px", background: car.accentColor, color: "#0A0A0A", border: `1px solid ${car.accentColor}`, transition: "all 0.35s ease" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = car.accentColor; }}
@@ -199,8 +196,7 @@ function CarCard({ car, index, onLearnMore, cardRef }) {
 // ─────────────────────────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────
-
-export default function Models({ onLearnMore }) {
+export default function Models() {
   const wrapperRef = useRef(null);
   const cardRefs   = useRef(cars.map(() => React.createRef()));
 
@@ -249,23 +245,17 @@ export default function Models({ onLearnMore }) {
   const handleEraClick = (era) => {
     const idx = cars.findIndex((c) => c.era === era);
     if (idx === -1) return;
-
-    // Card 0 — no trigger, scroll to wrapper top
     if (idx === 0) {
       const st = ScrollTrigger.getById("porsche-stack-1");
       if (st) window.scrollTo({ top: st.start, behavior: "smooth" });
       return;
     }
-
-    // Cards 1-6 — st.end is when THIS card is fully slid into view.
-    // st.start would be one card too early (it's where the previous card ends).
     const st = ScrollTrigger.getById(`porsche-stack-${idx}`);
     if (st) window.scrollTo({ top: st.end, behavior: "smooth" });
   };
 
   return (
     <section id="models" className="relative bg-dark-base">
-
       <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-12 pt-32 pb-16">
         <motion.div className="flex items-center gap-4 mb-6"
           initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
@@ -301,7 +291,6 @@ export default function Models({ onLearnMore }) {
               key={car.id}
               car={car}
               index={i}
-              onLearnMore={onLearnMore}
               cardRef={cardRefs.current[i]}
             />
           ))}
