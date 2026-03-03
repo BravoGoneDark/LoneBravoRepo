@@ -8,7 +8,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 
 // Animations
 import { INTRO_TIMING }    from "./animations/transitions";
-import { initCursorGlow }  from "./animations/gsapAnimations";
+import { initCursorGlow }  from "./animations/gsapanimations";
 
 // Global UI components
 import ScrollProgressBar from "./components/ScrollProgressBar";

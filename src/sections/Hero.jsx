@@ -12,7 +12,7 @@ import {
   scaleIn,
   staggerContainer,
 } from "../animations/variants";
-import { heroBackgroundParallax } from "../animations/gsapAnimations";
+import { heroBackgroundParallax } from "../animations/gsapanimations";
 import { featuredCar }            from "../constants/carData";
 
 // ─────────────────────────────────────────────────────────────
