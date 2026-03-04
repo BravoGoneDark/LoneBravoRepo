@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Environment }       from "@react-three/drei";
 import * as THREE from "three";
 
-function CarMesh({ modelPath, bodyColor }) {
+function CarMesh({ modelPath, bodyColor, scaleOverride }) {
   const { scene } = useGLTF(modelPath);
   const groupRef  = useRef();
 
@@ -44,7 +44,7 @@ function CarMesh({ modelPath, bodyColor }) {
     const center = box.getCenter(new THREE.Vector3());
     const size   = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scale  = 3.6 / maxDim;
+    const scale  = (scaleOverride ?? 3.6) / maxDim;
 
     groupRef.current.scale.setScalar(scale);
     groupRef.current.position.set(
@@ -117,10 +117,11 @@ function Loader() {
   );
 }
 
-export default function CarViewer({ modelPath, bodyColor }) {
+export default function CarViewer({ modelPath, bodyColor, scaleOverride, cameraPosition }) {
+  const camPos = cameraPosition || [0,0.6,3.2];
   return (
     <Canvas
-      camera={{ position: [0, 0.6, 3.2], fov: 46 }}
+      camera={{ position: camPos, fov: 46 }}
       style={{ width: "100%", height: "100%", background: "transparent" }}
     >
       <ambientLight intensity={0.45} />
@@ -130,7 +131,7 @@ export default function CarViewer({ modelPath, bodyColor }) {
       <pointLight       position={[3, 1, 3]}   intensity={0.5} color="#C8A96E" />
       <Environment preset="warehouse" />
       <Suspense fallback={<Loader />}>
-        <CarMesh modelPath={modelPath} bodyColor={bodyColor} />
+        <CarMesh modelPath={modelPath} bodyColor={bodyColor} scaleOverride={scaleOverride} />
       </Suspense>
     </Canvas>
   );

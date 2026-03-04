@@ -1,11 +1,11 @@
 // sections/CarDetailPage.jsx
-import { useState, useMemo }       from "react";
-import { useParams, useNavigate }  from "react-router-dom";
-import { motion }                  from "framer-motion";
-import { cars, getCarById }        from "../constants/carData";
-import CarViewer                   from "../components/CarViewer";
-import StatBar                     from "../components/StatBar";
-import Navbar                      from "../components/Navbar";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useParams, useNavigate }               from "react-router-dom";
+import { motion }                               from "framer-motion";
+import { cars, getCarById }                     from "../constants/carData";
+import CarViewer                                from "../components/CarViewer";
+import StatBar                                  from "../components/StatBar";
+import Navbar                                   from "../components/Navbar";
 
 // ─── Stat range across fleet ─────────────────────────────────
 function buildStatRanges(carList) {
@@ -148,14 +148,73 @@ function ColorPicker({ options, selected, onSelect, accentColor }) {
   );
 }
 
+// ─── Speaker icon ─────────────────────────────────────────────
+function SpeakerIcon({ muted }) {
+  return muted ? (
+    // Muted — speaker with X
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" y1="9" x2="17" y2="15" />
+      <line x1="17" y1="9" x2="23" y2="15" />
+    </svg>
+  ) : (
+    // Unmuted — speaker with waves
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    </svg>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────
 export default function CarDetailPage() {
   const { id }   = useParams();
   const navigate = useNavigate();
   const car      = getCarById(id);
 
-  const ranges = useMemo(() => buildStatRanges(cars), []);
-  const [color, setColor] = useState(car?.colorOptions?.[0] ?? { name: "Default", hex: "#C8A96E" });
+  const ranges   = useMemo(() => buildStatRanges(cars), []);
+  const [color, setColor]   = useState(car?.colorOptions?.[0] ?? { name: "Default", hex: "#C8A96E" });
+  const [muted, setMuted]   = useState(false);
+  const [isInteriorView, setIsInteriorView] = useState(false);
+
+  // ── Engine sound: play once on mount, clean up on unmount ──
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (!car?.engineSound) return;
+
+    const audio = new Audio(`/sounds/${car.engineSound}.mp3`);
+    audio.volume = 0.25;   // gentle — not blaring
+    audio.loop   = false;  // play once and stop
+
+    audioRef.current = audio;
+
+    // Small delay so it fires after the page animation starts
+    const timer = setTimeout(() => {
+      audio.play().catch(() => {
+        // Browser blocked autoplay silently — no crash
+      });
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+      audio.pause();
+      audio.src = "";
+      audioRef.current = null;
+    };
+  }, [car?.engineSound]);
+
+  // ── Mute toggle ──
+  const handleMuteToggle = () => {
+    setMuted(prev => {
+      const next = !prev;
+      if (audioRef.current) {
+        audioRef.current.muted = next;
+      }
+      return next;
+    });
+  };
 
   if (!car) {
     return (
@@ -228,7 +287,7 @@ export default function CarDetailPage() {
               </motion.p>
             </div>
 
-            {/* 3D Stat Panel — restored here */}
+            {/* 3D Stat Panel */}
             <StatPanel car={car} ranges={ranges} accentColor={accent} />
 
             <motion.div className="flex items-end justify-between pt-3"
@@ -261,7 +320,7 @@ export default function CarDetailPage() {
             <motion.div className="w-full h-full"
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-              <CarViewer modelPath={car.model} bodyColor={color.hex} />
+              <CarViewer modelPath={car.model} bodyColor={color.hex} scaleOverride={car.viewerScale} cameraPosition={car.cameraPosition}/>
             </motion.div>
             <div className="absolute bottom-2 right-4 font-orbitron font-black pointer-events-none select-none"
               style={{ fontSize: "clamp(3rem, 6vw, 6rem)", color: "rgba(255,255,255,0.018)", lineHeight: 1, letterSpacing: "-0.05em" }}>
@@ -271,6 +330,7 @@ export default function CarDetailPage() {
 
           {/* RIGHT */}
           <div className="flex flex-col justify-between px-6 py-5 gap-3 overflow-hidden">
+
             {/* Back button top-right */}
             <motion.button
               onClick={() => navigate(-1)}
@@ -301,15 +361,18 @@ export default function CarDetailPage() {
               <ColorPicker options={car.colorOptions} selected={color} onSelect={setColor} accentColor={accent} />
             </motion.div>
 
+            {/* CTAs + sound toggle + interior view */}
             <motion.div className="flex flex-col gap-2"
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.55 }}>
+
               <button
                 className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
                 style={{ background: accent, color: "#0A0A0A", border: `1px solid ${accent}` }}
                 onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = accent; }}
                 onMouseLeave={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = "#0A0A0A"; }}
               >Commission Yours</button>
+
               <button
                 className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
                 style={{ background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
@@ -317,6 +380,44 @@ export default function CarDetailPage() {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
                 onClick={() => navigate("/experience")}
               >Schedule a Drive</button>
+
+              {/* Interior View button — wired up, camera logic coming later */}
+              <button
+                className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
+                style={{
+                  background:   "transparent",
+                  color:        isInteriorView ? accent : "rgba(255,255,255,0.45)",
+                  border:       isInteriorView ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.1)",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = isInteriorView ? accent : "rgba(255,255,255,0.1)";
+                  e.currentTarget.style.color       = isInteriorView ? accent : "rgba(255,255,255,0.45)";
+                }}
+                onClick={() => setIsInteriorView(v => !v)}
+              >
+                {isInteriorView ? "Exterior View" : "Interior View"}
+              </button>
+
+              {/* Sound mute toggle */}
+              <button
+                onClick={handleMuteToggle}
+                className="flex items-center gap-2 font-orbitron text-[9px] tracking-[0.25em] uppercase py-2 px-3 transition-all duration-300 self-start"
+                style={{
+                  color:        muted ? "rgba(255,255,255,0.25)" : accent,
+                  border:       `1px solid ${muted ? "rgba(255,255,255,0.08)" : accent + "55"}`,
+                  background:   "transparent",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = muted ? "rgba(255,255,255,0.08)" : accent + "55";
+                  e.currentTarget.style.color       = muted ? "rgba(255,255,255,0.25)" : accent;
+                }}
+              >
+                <SpeakerIcon muted={muted} />
+                {muted ? "Sound Off" : "Sound On"}
+              </button>
+
             </motion.div>
           </div>
         </div>

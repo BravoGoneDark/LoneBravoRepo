@@ -14,7 +14,7 @@ export const cars = [
     image:        "/images/cars/930-turbo.jpg",
     model:        "/models/911-turbo.glb",
     accentColor:  "#C8A96E",
-    engineSound:      "flat-six-turbo",
+    engineSound:      "911-turbo",
     engineCharacter:  "Laggy turbo spool, then a savage boost surge that overwhelms the rear wheels",
     stats: {
       topSpeed:     { value: 260,   unit: "km/h"   },
@@ -26,6 +26,8 @@ export const cars = [
       drivetrain:   { value: "RWD"                                },
       transmission: { value: "4-spd Manual"                       },
     },
+    viewerScale:    3.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
       { name: "Silver Metallic", hex: "#9B9B9B" },
       { name: "Guards Red",      hex: "#D5001C" },
@@ -48,7 +50,7 @@ export const cars = [
     image:        "/images/cars/959.jpg",
     model:        "/models/959.glb",
     accentColor:  "#D5001C",
-    engineSound:      "flat-six-turbo",
+    engineSound:      "959",
     engineCharacter:  "Twin-sequential turbos with two distinct boost waves — subtle at low RPM, explosive at high",
     stats: {
       topSpeed:     { value: 317,   unit: "km/h"   },
@@ -60,9 +62,11 @@ export const cars = [
       drivetrain:   { value: "AWD"                                   },
       transmission: { value: "6-spd Manual"                          },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.8, 3.8],
     colorOptions: [
-      { name: "Guards Red",       hex: "#D5001C" },
       { name: "Silver Metallic",  hex: "#9B9B9B" },
+      { name: "Guards Red",       hex: "#D5001C" },
       { name: "Black",            hex: "#0A0A0A" },
       { name: "Slate Grey",       hex: "#4A4A4A" },
       { name: "Grand Prix White", hex: "#F5F5F5" },
@@ -82,7 +86,7 @@ export const cars = [
     image:        "/images/cars/993-gt2.jpg",
     model:        "/models/911-gt2.glb",
     accentColor:  "#F5D000",
-    engineSound:      "flat-six-turbo",
+    engineSound:      "911-gt2",
     engineCharacter:  "Raw twin-turbo flat-six with no traction control buffer — every throttle input is a conversation with physics",
     stats: {
       topSpeed:     { value: 295,   unit: "km/h"   },
@@ -94,6 +98,8 @@ export const cars = [
       drivetrain:   { value: "RWD"                      },
       transmission: { value: "6-spd Manual"              },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
       { name: "Racing Yellow",    hex: "#F5D000" },
       { name: "Grand Prix White", hex: "#F5F5F5" },
@@ -116,7 +122,7 @@ export const cars = [
     image:        "/images/cars/911-gt1-97.jpg",
     model:        "/models/911-gt1.glb",
     accentColor:  "#FFFFFF",
-    engineSound:      "flat-six-turbo",
+    engineSound:      "911-gt1",
     engineCharacter:  "Le Mans-spec twin-turbo six — built to sustain 330 km/h for 24 hours straight",
     stats: {
       topSpeed:     { value: 330,   unit: "km/h"   },
@@ -128,9 +134,11 @@ export const cars = [
       drivetrain:   { value: "RWD"                                   },
       transmission: { value: "6-spd Sequential"                      },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
-      { name: "Pearl White", hex: "#F5F5F0" },
       { name: "Silver",      hex: "#9B9B9B" },
+      { name: "Pearl White", hex: "#F5F5F0" },
       { name: "Black",       hex: "#0A0A0A" },
     ],
   },
@@ -148,7 +156,7 @@ export const cars = [
     image:        "/images/cars/carrera-gt.jpg",
     model:        "/models/carrera-gt.glb",
     accentColor:  "#D5001C",
-    engineSound:      "v10-na",
+    engineSound:      "carrera-gt",
     engineCharacter:  "5.7L V10 screaming to 8,000 RPM — an operatic, spine-tingling note found nowhere else on earth",
     stats: {
       topSpeed:     { value: 330,   unit: "km/h"   },
@@ -160,9 +168,11 @@ export const cars = [
       drivetrain:   { value: "RWD"                          },
       transmission: { value: "6-spd Manual"                 },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
-      { name: "Fayence Yellow",   hex: "#C8A028" },
       { name: "Guards Red",       hex: "#D5001C" },
+      { name: "Fayence Yellow",   hex: "#C8A028" },
       { name: "Basalt Black",     hex: "#1A1A1A" },
       { name: "Seal Grey",        hex: "#6B6B6B" },
       { name: "Grand Prix White", hex: "#F5F5F5" },
@@ -183,7 +193,7 @@ export const cars = [
     cardImage:    "/images/cars/911-gt3-card.jpg",
     model:        "/models/911-gt3.glb",
     accentColor:  "#D5001C",
-    engineSound:      "flat-six-na",
+    engineSound:      "911-gt3",
     engineCharacter:  "Naturally aspirated flat-six with a 9,000 RPM ceiling — a pure mechanical howl that builds linearly to a screaming crescendo",
     stats: {
       topSpeed:     { value: 318,   unit: "km/h"   },
@@ -195,12 +205,14 @@ export const cars = [
       drivetrain:   { value: "RWD"                               },
       transmission: { value: "7-spd PDK / 6-spd Manual"          },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
+      { name: "Shark Blue",    hex: "#1C3F6E" },
       { name: "Guards Red",    hex: "#D5001C" },
       { name: "GT Silver",     hex: "#9B9B9B" },
       { name: "Jet Black",     hex: "#0A0A0A" },
       { name: "Racing Yellow", hex: "#F5D000" },
-      { name: "Shark Blue",    hex: "#1C3F6E" },
     ],
   },
   {
@@ -217,7 +229,7 @@ export const cars = [
     image:        "/images/cars/taycan-turbo-s.jpg",
     model:        "/models/taycan-turbo-s.glb",
     accentColor:  "#C8A96E",
-    engineSound:      "electric-motor",
+    engineSound:      "taycan-turbo-s",
     engineCharacter:  "Instant 1,050 Nm with a rising electric whine — no lag, no buildup, just immediate and total force",
     stats: {
       topSpeed:     { value: 260,   unit: "km/h"   },
@@ -229,6 +241,8 @@ export const cars = [
       drivetrain:   { value: "AWD"                                       },
       transmission: { value: "2-spd PDK (rear axle)"                     },
     },
+    viewerScale:    2.8,
+    cameraPosition: [0, 1.1, 3.8],  
     colorOptions: [
       { name: "Frozen Blue",   hex: "#5B8FA8" },
       { name: "Gentian Blue",  hex: "#1C3F6E" },
