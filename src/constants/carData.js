@@ -26,15 +26,16 @@ export const cars = [
       drivetrain:   { value: "RWD"                                },
       transmission: { value: "4-spd Manual"                       },
     },
-    viewerScale:    3.8,
-    cameraPosition: [0, 1.1, 3.8],  
-    colorOptions: [
-      { name: "Silver Metallic", hex: "#9B9B9B" },
-      { name: "Guards Red",      hex: "#D5001C" },
-      { name: "Black",           hex: "#0A0A0A" },
-      { name: "Minerva Blue",    hex: "#2B4570" },
-      { name: "Copper Brown",    hex: "#7B4F35" },
-    ],
+    viewerScale:      3.6,
+    cameraPosition:   [0, 1.2, 5.5],
+    pivotCorrection:  0,
+   colorOptions: [
+  { name: "Obsidian Black",  hex: "#0A0A0A" },
+  { name: "Midnight",        hex: "#1A1A2E" },
+  { name: "Dark Slate",      hex: "#2C2C2C" },
+  { name: "Gunmetal",        hex: "#2A3439" },
+  { name: "Carbon",          hex: "#1C1C1C" },
+],
   },
   {
     id:           "959",
@@ -99,7 +100,7 @@ export const cars = [
       transmission: { value: "6-spd Manual"              },
     },
     viewerScale:    2.8,
-    cameraPosition: [0, 1.1, 3.8],  
+    cameraPosition: [0, 1.1, 3.8],
     colorOptions: [
       { name: "Racing Yellow",    hex: "#F5D000" },
       { name: "Grand Prix White", hex: "#F5F5F5" },
@@ -135,7 +136,7 @@ export const cars = [
       transmission: { value: "6-spd Sequential"                      },
     },
     viewerScale:    2.8,
-    cameraPosition: [0, 1.1, 3.8],  
+    cameraPosition: [0, 1.1, 3.8],
     colorOptions: [
       { name: "Silver",      hex: "#9B9B9B" },
       { name: "Pearl White", hex: "#F5F5F0" },
@@ -169,7 +170,7 @@ export const cars = [
       transmission: { value: "6-spd Manual"                 },
     },
     viewerScale:    2.8,
-    cameraPosition: [0, 1.1, 3.8],  
+    cameraPosition: [0, 1.1, 3.8],
     colorOptions: [
       { name: "Guards Red",       hex: "#D5001C" },
       { name: "Fayence Yellow",   hex: "#C8A028" },
@@ -206,7 +207,7 @@ export const cars = [
       transmission: { value: "7-spd PDK / 6-spd Manual"          },
     },
     viewerScale:    2.8,
-    cameraPosition: [0, 1.1, 3.8],  
+    cameraPosition: [0, 1.1, 3.8],
     colorOptions: [
       { name: "Shark Blue",    hex: "#1C3F6E" },
       { name: "Guards Red",    hex: "#D5001C" },
@@ -242,7 +243,7 @@ export const cars = [
       transmission: { value: "2-spd PDK (rear axle)"                     },
     },
     viewerScale:    2.8,
-    cameraPosition: [0, 1.1, 3.8],  
+    cameraPosition: [0, 1.1, 3.8],
     colorOptions: [
       { name: "Frozen Blue",   hex: "#5B8FA8" },
       { name: "Gentian Blue",  hex: "#1C3F6E" },
