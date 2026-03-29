@@ -18,7 +18,7 @@ import Footer            from "./components/Footer";
 import Hero         from "./sections/Hero";
 import Models       from "./sections/Models";
 import Configurator from "./sections/Configurator";
-import Performance  from "./sections/Performance";
+import History  from "./sections/History";
 import Experience   from "./sections/Experience";
 
 // Pages
@@ -98,8 +98,8 @@ function MainSite() {
         <main>
           <Hero introComplete={introComplete} />
           <Models />
+          <History />
           <Configurator />
-          <Performance />
           <Experience />
         </main>
         <Footer />

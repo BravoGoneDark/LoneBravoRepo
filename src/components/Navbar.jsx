@@ -14,8 +14,8 @@ import { staggerContainer, fadeUp, clipReveal } from "../animations/variants";
 
 const NAV_LINKS = [
   { label: "Models",      href: "#models"       },
+  { label: "Heritage",    href: "#history"      },
   { label: "Configure",   href: "#configurator" },
-  { label: "Performance", href: "#performance"  },
   { label: "Experience",  href: "#experience"   },
 ];
 

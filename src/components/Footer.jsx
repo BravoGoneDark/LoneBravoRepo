@@ -39,6 +39,16 @@ const SOCIAL_LINKS = [
     href:  "https://twitter.com/porsche",
     icon:  <XIcon />,
   },
+  {
+    label: "Facebook",
+    href:  "https://www.facebook.com/porsche",
+    icon:  <FacebookIcon />,
+  },
+  {
+    label: "LinkedIn",
+    href:  "https://www.linkedin.com/company/porsche-ag",
+    icon:  <LinkedInIcon />,
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -85,7 +95,7 @@ export default function Footer() {
 
           {/* ── Quote ──────────────────────────────────────── */}
           <div className="text-center mb-14">
-            <p className="font-rajdhani italic text-white/40 text-lg tracking-widest">
+            <p className="font-rajdhani italic text-porsche-gold/60 text-2xl tracking-widest">
               "There is no substitute."
             </p>
           </div>
@@ -167,8 +177,7 @@ export default function Footer() {
             className="font-orbitron font-black uppercase leading-none"
             style={{
               fontSize:      "clamp(4rem, 14vw, 11rem)",
-              color:         "transparent",
-              WebkitTextStroke: "1px rgba(200, 169, 110, 0.07)",
+              color:         "rgba(200, 169, 110, 0.09)",
               letterSpacing: "0.15em",
               transform:     "translateY(30%)",
             }}
@@ -212,7 +221,7 @@ export default function Footer() {
 
 function InstagramIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth="1.5"
       strokeLinecap="round" strokeLinejoin="round"
     >
@@ -225,7 +234,7 @@ function InstagramIcon() {
 
 function YouTubeIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth="1.5"
       strokeLinecap="round" strokeLinejoin="round"
     >
@@ -237,8 +246,34 @@ function YouTubeIcon() {
 
 function XIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.258 5.626zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="1.5"
+      strokeLinecap="round" strokeLinejoin="round"
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="1.5"
+      strokeLinecap="round" strokeLinejoin="round"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="4" ry="4" />
+      <line x1="8" y1="11" x2="8" y2="16" />
+      <line x1="8" y1="8" x2="8" y2="8.01" />
+      <line x1="12" y1="16" x2="12" y2="11" />
+      <path d="M16 16v-3a2 2 0 0 0-4 0" />
     </svg>
   );
 }
