@@ -1,7 +1,7 @@
 // components/CarViewer.jsx
 import { Suspense, useRef, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Environment }       from "@react-three/drei";
+import { useGLTF, Environment, ContactShadows } from "@react-three/drei"; 
 import * as THREE from "three";
 
 // ─── Per-model recolor logic ────────────────────────────────────────────────
@@ -65,7 +65,7 @@ function getRecolorDecision(name) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-function CarMesh({ modelPath, bodyColor, scaleOverride, pivotCorrection = 0 }) {
+function CarMesh({ modelPath, bodyColor, scaleOverride, pivotCorrection = 0, autoRotate = false, groundOffset = 0 }) {
   const { scene } = useGLTF(modelPath);
   const groupRef  = useRef();
   const innerRef  = useRef();
@@ -125,7 +125,7 @@ function CarMesh({ modelPath, bodyColor, scaleOverride, pivotCorrection = 0 }) {
     groupRef.current.scale.setScalar(scale);
     groupRef.current.position.set(
       0,
-      (center.y - box.min.y) * scale + pivotCorrection,
+      (center.y - box.min.y) * scale + pivotCorrection - groundOffset,
       0
     );
 
@@ -178,6 +178,7 @@ function CarMesh({ modelPath, bodyColor, scaleOverride, pivotCorrection = 0 }) {
     if (!isDragging.current) {
       velocity.current   *= 0.92;
       targetRotY.current += velocity.current;
+      if (autoRotate) targetRotY.current += 0.004;
     }
     groupRef.current.rotation.y +=
       (targetRotY.current - groupRef.current.rotation.y) * 0.1;
@@ -207,25 +208,49 @@ export default function CarViewer({
   scaleOverride,
   cameraPosition,
   pivotCorrection,
+  autoRotate,
+  groundOffset
 }) {
   const camPos = cameraPosition || [0, 0.6, 3.2];
   return (
     <Canvas
       camera={{ position: camPos, fov: 46 }}
-      style={{ width: "100%", height: "100%", background: "transparent" }}
+      style={{ width: "100%", height: "100%", background: "#0a0a0a" }}
     >
-      <ambientLight intensity={0.45} />
-      <directionalLight position={[5, 8, 5]}   intensity={1.4} />
-      <directionalLight position={[-5, 4, -3]} intensity={0.7} />
-      <pointLight       position={[0, 5, 0]}   intensity={0.9} color="#ffffff" />
-      <pointLight       position={[3, 1, 3]}   intensity={0.5} color="#C8A96E" />
-      <Environment preset="warehouse" />
+      <ambientLight intensity={0.08} />
+      <spotLight
+        position={[0, 6, 2]}
+        angle={0.35}
+        penumbra={0.8}
+        intensity={4}
+        castShadow
+        color="#ffffff"
+      />
+      <spotLight
+        position={[3, 4, 3]}
+        angle={0.4}
+        penumbra={1}
+        intensity={1.2}
+        color="#C8A96E"
+      />
+      <Environment preset="city" background={false} />
+      <ContactShadows
+        position={[0, -0.5, 0]}
+        opacity={0.5}
+        scale={25}
+        blur={2.5}
+        far={3}
+        resolution={256}
+        color="#000000"
+      />
       <Suspense fallback={<Loader />}>
         <CarMesh
           modelPath={modelPath}
           bodyColor={bodyColor}
           scaleOverride={scaleOverride}
           pivotCorrection={pivotCorrection}
+          autoRotate={autoRotate}
+          groundOffset={groundOffset}
         />
       </Suspense>
     </Canvas>

@@ -214,7 +214,15 @@ export default function Experience() {
       </section>
 
       {/* Drive Modal */}
-      <DriveModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <DriveModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onEnterCockpit={(car) => {
+          setModalOpen(false);
+          // CockpitSim trigger goes here in Step 3
+          console.log("Enter cockpit:", car.name);
+        }}
+      />
     </>
   );
 }
