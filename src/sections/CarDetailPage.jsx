@@ -6,6 +6,8 @@ import { cars, getCarById }                     from "../constants/carData";
 import CarViewer                                from "../components/CarViewer";
 import StatBar                                  from "../components/StatBar";
 import Navbar                                   from "../components/Navbar";
+import DriveModal                               from "../components/DriveModal";
+import ARViewer                                 from "../components/ARViewer";
 
 // ─── Stat range across fleet ─────────────────────────────────
 function buildStatRanges(carList) {
@@ -80,7 +82,6 @@ function StatPanel({ car, ranges, accentColor }) {
 
         {/* 2-column grid */}
         <div className="grid grid-cols-2 gap-x-8">
-
           {/* LEFT — animated bars */}
           <div className="flex flex-col gap-6 pr-6"
             style={{ borderRight: `1px solid ${accentColor}22` }}>
@@ -151,14 +152,12 @@ function ColorPicker({ options, selected, onSelect, accentColor }) {
 // ─── Speaker icon ─────────────────────────────────────────────
 function SpeakerIcon({ muted }) {
   return muted ? (
-    // Muted — speaker with X
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <line x1="23" y1="9" x2="17" y2="15" />
       <line x1="17" y1="9" x2="23" y2="15" />
     </svg>
   ) : (
-    // Unmuted — speaker with waves
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -173,30 +172,25 @@ export default function CarDetailPage() {
   const navigate = useNavigate();
   const car      = getCarById(id);
 
-  const ranges   = useMemo(() => buildStatRanges(cars), []);
-  const [color, setColor]   = useState(car?.colorOptions?.[0] ?? { name: "Default", hex: "#C8A96E" });
-  const [muted, setMuted]   = useState(false);
-  const [isInteriorView, setIsInteriorView] = useState(false);
+  const ranges = useMemo(() => buildStatRanges(cars), []);
 
-  // ── Engine sound: play once on mount, clean up on unmount ──
+  const [color,         setColor]         = useState(car?.colorOptions?.[0] ?? { name: "Default", hex: "#C8A96E" });
+  const [muted,         setMuted]         = useState(false);
+  const [driveOpen,     setDriveOpen]     = useState(false);
+  const [arOpen,        setArOpen]        = useState(false);
+  const [cockpitOpen,   setCockpitOpen]   = useState(false); // placeholder for CockpitSim
+
   const audioRef = useRef(null);
 
   useEffect(() => {
     if (!car?.engineSound) return;
-
     const audio = new Audio(`/sounds/${car.engineSound}.mp3`);
-    audio.volume = 0.25;   // gentle — not blaring
-    audio.loop   = false;  // play once and stop
-
+    audio.volume = 0.25;
+    audio.loop   = false;
     audioRef.current = audio;
-
-    // Small delay so it fires after the page animation starts
     const timer = setTimeout(() => {
-      audio.play().catch(() => {
-        // Browser blocked autoplay silently — no crash
-      });
+      audio.play().catch(() => {});
     }, 400);
-
     return () => {
       clearTimeout(timer);
       audio.pause();
@@ -205,13 +199,10 @@ export default function CarDetailPage() {
     };
   }, [car?.engineSound]);
 
-  // ── Mute toggle ──
   const handleMuteToggle = () => {
     setMuted(prev => {
       const next = !prev;
-      if (audioRef.current) {
-        audioRef.current.muted = next;
-      }
+      if (audioRef.current) audioRef.current.muted = next;
       return next;
     });
   };
@@ -227,201 +218,237 @@ export default function CarDetailPage() {
   const accent = car.accentColor;
 
   return (
-    <div className="h-screen text-white relative overflow-hidden" style={{ background: "#0D0D0D" }}>
+    <>
+      <div className="h-screen text-white relative overflow-hidden" style={{ background: "#0D0D0D" }}>
 
-      {/* Showroom grid bg */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: `
-          linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
-        `,
-        backgroundSize: "80px 80px",
-        maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)",
-      }} />
+        {/* Showroom grid bg */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
+          `,
+          backgroundSize: "80px 80px",
+          maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)",
+        }} />
 
-      {/* Accent glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: `radial-gradient(ellipse 60% 50% at 55% 60%, ${accent}14 0%, transparent 70%)`,
-      }} />
+        {/* Accent glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: `radial-gradient(ellipse 60% 50% at 55% 60%, ${accent}14 0%, transparent 70%)`,
+        }} />
 
-      {/* Navbar */}
-      <Navbar activeSection="" />
+        {/* Navbar */}
+        <Navbar activeSection="" />
 
-      {/* ── 2-row layout: top columns + bottom stat bar ─── */}
-      <div className="relative z-10 h-full flex flex-col pt-14 overflow-hidden">
+        {/* ── 2-row layout ─────────────────────────── */}
+        <div className="relative z-10 h-full flex flex-col pt-14 overflow-hidden">
 
-        {/* ── TOP ROW: 3 columns ─────────────────────────── */}
-        <div className="grid grid-cols-[420px_1fr_260px] flex-1 min-h-0">
+          {/* ── TOP ROW: 3 columns ─────────────────────────── */}
+          <div className="grid grid-cols-[420px_1fr_260px] flex-1 min-h-0">
 
-          {/* LEFT */}
-          <div className="flex flex-col justify-between px-8 py-5 gap-4 overflow-hidden">
-            <div>
-              <motion.div className="flex items-center gap-2 mb-3"
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}>
-                <span className="block w-4 h-px" style={{ background: accent }} />
-                <span className="font-orbitron text-[8px] tracking-[0.5em] uppercase" style={{ color: accent }}>
-                  {car.era} · {car.model_code}
-                </span>
-                <span className="font-orbitron text-[7px] tracking-widest border px-1.5 py-0.5"
-                  style={{ color: "rgba(255,255,255,0.2)", borderColor: "rgba(255,255,255,0.08)" }}>
-                  Class {car.class}
-                </span>
-              </motion.div>
-              <motion.h1 className="font-orbitron font-black leading-none mb-2"
-                style={{ fontSize: "clamp(1.6rem, 3vw, 2.6rem)", letterSpacing: "-0.02em" }}
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.25 }}>
-                {car.name}
-              </motion.h1>
-              <motion.p className="font-rajdhani text-base italic mb-2" style={{ color: accent }}
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}>
-                "{car.tagline}"
-              </motion.p>
-              <motion.p className="font-rajdhani leading-relaxed"
-                style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.72rem" }}
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                transition={{ duration: 0.7, delay: 0.38 }}>
-                {car.description}
-              </motion.p>
-            </div>
-
-            {/* 3D Stat Panel */}
-            <StatPanel car={car} ranges={ranges} accentColor={accent} />
-
-            <motion.div className="flex items-end justify-between pt-3"
-              style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}>
+            {/* LEFT */}
+            <div className="flex flex-col justify-between px-8 py-5 gap-4 overflow-hidden">
               <div>
-                <p className="font-orbitron text-[7px] tracking-[0.4em] uppercase mb-0.5"
-                  style={{ color: "rgba(255,255,255,0.2)" }}>Year</p>
-                <p className="font-orbitron text-xl font-black" style={{ color: accent }}>{car.year}</p>
+                <motion.div className="flex items-center gap-2 mb-3"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}>
+                  <span className="block w-4 h-px" style={{ background: accent }} />
+                  <span className="font-orbitron text-[8px] tracking-[0.5em] uppercase" style={{ color: accent }}>
+                    {car.era} · {car.model_code}
+                  </span>
+                  <span className="font-orbitron text-[7px] tracking-widest border px-1.5 py-0.5"
+                    style={{ color: "rgba(255,255,255,0.2)", borderColor: "rgba(255,255,255,0.08)" }}>
+                    Class {car.class}
+                  </span>
+                </motion.div>
+                <motion.h1 className="font-orbitron font-black leading-none mb-2"
+                  style={{ fontSize: "clamp(1.6rem, 3vw, 2.6rem)", letterSpacing: "-0.02em" }}
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.25 }}>
+                  {car.name}
+                </motion.h1>
+                <motion.p className="font-rajdhani text-base italic mb-2" style={{ color: accent }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}>
+                  "{car.tagline}"
+                </motion.p>
+                <motion.p className="font-rajdhani leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.72rem" }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  transition={{ duration: 0.7, delay: 0.38 }}>
+                  {car.description}
+                </motion.p>
               </div>
-              <div className="text-right">
-                <p className="font-orbitron text-[7px] tracking-[0.4em] uppercase mb-0.5"
-                  style={{ color: "rgba(255,255,255,0.2)" }}>Original MSRP</p>
-                <p className="font-orbitron text-sm font-bold" style={{ color: "rgba(255,255,255,0.6)" }}>
-                  {car.price}
-                </p>
-              </div>
-            </motion.div>
-          </div>
 
-          {/* CENTER — 3D Viewer */}
-          <div className="relative flex flex-col items-center justify-end pb-2">
-            <motion.p className="absolute top-3 left-1/2 -translate-x-1/2 font-orbitron text-[8px] tracking-[0.4em] uppercase z-10"
-              style={{ color: "rgba(255,255,255,0.15)" }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}>
-              Hold & drag to rotate
-            </motion.p>
-            <motion.div className="w-full h-full"
-              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-              <CarViewer modelPath={car.model} bodyColor={color.hex} scaleOverride={car.viewerScale} cameraPosition={car.cameraPosition}/>
-            </motion.div>
-            <div className="absolute bottom-2 right-4 font-orbitron font-black pointer-events-none select-none"
-              style={{ fontSize: "clamp(3rem, 6vw, 6rem)", color: "rgba(255,255,255,0.018)", lineHeight: 1, letterSpacing: "-0.05em" }}>
-              {car.model_code}
+              <StatPanel car={car} ranges={ranges} accentColor={accent} />
+
+              <motion.div className="flex items-end justify-between pt-3"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}>
+                <div>
+                  <p className="font-orbitron text-[7px] tracking-[0.4em] uppercase mb-0.5"
+                    style={{ color: "rgba(255,255,255,0.2)" }}>Year</p>
+                  <p className="font-orbitron text-xl font-black" style={{ color: accent }}>{car.year}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-orbitron text-[7px] tracking-[0.4em] uppercase mb-0.5"
+                    style={{ color: "rgba(255,255,255,0.2)" }}>Original MSRP</p>
+                  <p className="font-orbitron text-sm font-bold" style={{ color: "rgba(255,255,255,0.6)" }}>
+                    {car.price}
+                  </p>
+                </div>
+              </motion.div>
             </div>
-          </div>
 
-          {/* RIGHT */}
-          <div className="flex flex-col justify-between px-6 py-5 gap-3 overflow-hidden">
+            {/* CENTER — 3D Viewer */}
+            <div className="relative flex flex-col items-center justify-end pb-2">
+              <motion.p className="absolute top-3 left-1/2 -translate-x-1/2 font-orbitron text-[8px] tracking-[0.4em] uppercase z-10"
+                style={{ color: "rgba(255,255,255,0.15)" }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                transition={{ delay: 1.2 }}>
+                Hold &amp; drag to rotate
+              </motion.p>
+              <motion.div className="w-full h-full"
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
+                <CarViewer
+                  modelPath={car.model}
+                  bodyColor={color.hex}
+                  scaleOverride={car.viewerScale}
+                  cameraPosition={car.cameraPosition}
+                />
+              </motion.div>
+              <div className="absolute bottom-2 right-4 font-orbitron font-black pointer-events-none select-none"
+                style={{ fontSize: "clamp(3rem, 6vw, 6rem)", color: "rgba(255,255,255,0.018)", lineHeight: 1, letterSpacing: "-0.05em" }}>
+                {car.model_code}
+              </div>
+            </div>
 
-            {/* Back button top-right */}
-            <motion.button
-              onClick={() => navigate(-1)}
-              className="self-end flex items-center gap-2 font-orbitron text-[9px] tracking-[0.3em] uppercase px-4 py-2"
-              style={{ color: accent, border: `1px solid ${accent}33`, background: "rgba(10,10,10,0.5)" }}
-              initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ background: `${accent}18`, borderColor: accent }}
-            >
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-              Back
-            </motion.button>
+            {/* RIGHT */}
+            <div className="flex flex-col justify-between px-6 py-5 gap-3 overflow-hidden">
 
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}>
-              <p className="font-orbitron text-[8px] tracking-[0.4em] uppercase mb-2"
-                style={{ color: "rgba(255,255,255,0.2)" }}>Character</p>
-              <p className="font-rajdhani text-xs italic leading-relaxed"
-                style={{ color: "rgba(255,255,255,0.38)" }}>
-                {car.engineCharacter}
-              </p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.45 }}>
-              <ColorPicker options={car.colorOptions} selected={color} onSelect={setColor} accentColor={accent} />
-            </motion.div>
-
-            {/* CTAs + sound toggle + interior view */}
-            <motion.div className="flex flex-col gap-2"
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}>
-
-              <button
-                className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
-                style={{ background: accent, color: "#0A0A0A", border: `1px solid ${accent}` }}
-                onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = accent; }}
-                onMouseLeave={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = "#0A0A0A"; }}
-              >Commission Yours</button>
-
-              <button
-                className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
-                style={{ background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
-                onClick={() => navigate("/experience")}
-              >Schedule a Drive</button>
-
-              {/* Interior View button — wired up, camera logic coming later */}
-              <button
-                className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
-                style={{
-                  background:   "transparent",
-                  color:        isInteriorView ? accent : "rgba(255,255,255,0.45)",
-                  border:       isInteriorView ? `1px solid ${accent}` : "1px solid rgba(255,255,255,0.1)",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = isInteriorView ? accent : "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.color       = isInteriorView ? accent : "rgba(255,255,255,0.45)";
-                }}
-                onClick={() => setIsInteriorView(v => !v)}
+              {/* Back button */}
+              <motion.button
+                onClick={() => navigate(-1)}
+                className="self-end flex items-center gap-2 font-orbitron text-[9px] tracking-[0.3em] uppercase px-4 py-2"
+                style={{ color: accent, border: `1px solid ${accent}33`, background: "rgba(10,10,10,0.5)" }}
+                initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                whileHover={{ background: `${accent}18`, borderColor: accent }}
               >
-                {isInteriorView ? "Exterior View" : "Interior View"}
-              </button>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                Back
+              </motion.button>
 
-              {/* Sound mute toggle */}
-              <button
-                onClick={handleMuteToggle}
-                className="flex items-center gap-2 font-orbitron text-[9px] tracking-[0.25em] uppercase py-2 px-3 transition-all duration-300 self-start"
-                style={{
-                  color:        muted ? "rgba(255,255,255,0.25)" : accent,
-                  border:       `1px solid ${muted ? "rgba(255,255,255,0.08)" : accent + "55"}`,
-                  background:   "transparent",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = muted ? "rgba(255,255,255,0.08)" : accent + "55";
-                  e.currentTarget.style.color       = muted ? "rgba(255,255,255,0.25)" : accent;
-                }}
-              >
-                <SpeakerIcon muted={muted} />
-                {muted ? "Sound Off" : "Sound On"}
-              </button>
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.35 }}>
+                <p className="font-orbitron text-[8px] tracking-[0.4em] uppercase mb-2"
+                  style={{ color: "rgba(255,255,255,0.2)" }}>Character</p>
+                <p className="font-rajdhani text-xs italic leading-relaxed"
+                  style={{ color: "rgba(255,255,255,0.38)" }}>
+                  {car.engineCharacter}
+                </p>
+              </motion.div>
 
-            </motion.div>
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.45 }}>
+                <ColorPicker options={car.colorOptions} selected={color} onSelect={setColor} accentColor={accent} />
+              </motion.div>
+
+              {/* CTAs */}
+              <motion.div className="flex flex-col gap-2"
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.55 }}>
+
+                {/* Commission Yours — unchanged */}
+                <button
+                  className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
+                  style={{ background: accent, color: "#0A0A0A", border: `1px solid ${accent}` }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = "#0A0A0A"; }}
+                >
+                  Commission Yours
+                </button>
+
+                {/* Schedule a Drive → opens DriveModal pre-set to this car */}
+                <button
+                  className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
+                  style={{ background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
+                  onClick={() => setDriveOpen(true)}
+                >
+                  Schedule a Drive
+                </button>
+
+                {/* Interior View → CockpitSim (placeholder) */}
+                <button
+                  className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
+                  style={{ background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
+                  onClick={() => setCockpitOpen(true)}
+                >
+                  Interior View
+                </button>
+
+                {/* View in AR */}
+                <button
+                  className="font-orbitron text-[10px] tracking-[0.25em] uppercase py-3 px-6 transition-all duration-300"
+                  style={{ background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }}
+                  onClick={() => setArOpen(true)}
+                >
+                  View in AR
+                </button>
+
+                {/* Sound toggle */}
+                <button
+                  onClick={handleMuteToggle}
+                  className="flex items-center gap-2 font-orbitron text-[9px] tracking-[0.25em] uppercase py-2 px-3 transition-all duration-300 self-start"
+                  style={{
+                    color:      muted ? "rgba(255,255,255,0.25)" : accent,
+                    border:     `1px solid ${muted ? "rgba(255,255,255,0.08)" : accent + "55"}`,
+                    background: "transparent",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = muted ? "rgba(255,255,255,0.08)" : accent + "55";
+                    e.currentTarget.style.color       = muted ? "rgba(255,255,255,0.25)" : accent;
+                  }}
+                >
+                  <SpeakerIcon muted={muted} />
+                  {muted ? "Sound Off" : "Sound On"}
+                </button>
+
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Drive Modal — pre-set to this car */}
+      <DriveModal
+        isOpen={driveOpen}
+        onClose={() => setDriveOpen(false)}
+        initialCarId={car.id}
+        onEnterCockpit={(selectedCar) => {
+          setDriveOpen(false);
+          setCockpitOpen(true);
+          // CockpitSim will receive selectedCar in Step 3
+          console.log("Enter cockpit:", selectedCar.name);
+        }}
+      />
+
+      {/* AR Viewer — current car */}
+      <ARViewer
+        isOpen={arOpen}
+        onClose={() => setArOpen(false)}
+        car={car}
+      />
+    </>
   );
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AR Viewer</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #080808;
+      overflow: hidden;
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      background-color: #080808;
+      --poster-color: #080808;
+      --progress-bar-color: #C8A96E;
+      --progress-bar-height: 2px;
+    }
+    #ar-btn {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 12px 24px;
+      border: 1px solid rgba(200,169,110,0.6);
+      color: #C8A96E;
+      background: rgba(12,12,12,0.85);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 2px;
+      box-shadow: 0 0 24px rgba(200,169,110,0.15);
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <model-viewer
+    id="mv"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    camera-controls
+    auto-rotate
+    auto-rotate-delay="500"
+    rotation-per-second="20deg"
+    shadow-intensity="1"
+    shadow-softness="1"
+    exposure="1"
+    tone-mapping="neutral"
+  >
+    <button slot="ar-button" id="ar-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+      View in AR
+    </button>
+  </model-viewer>
+
+  <script>
+    const mv = document.getElementById('mv');
+
+    // Read src from URL param e.g. /ar-viewer.html?src=/models/911-turbo.glb
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get('src');
+    if (src) {
+      // Use absolute URL so model-viewer can fetch it
+      mv.src = window.location.origin + src;
+    }
+  </script>
+</body>
+</html>

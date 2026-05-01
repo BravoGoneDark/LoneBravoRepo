@@ -18,14 +18,15 @@ import Footer            from "./components/Footer";
 import Hero         from "./sections/Hero";
 import Models       from "./sections/Models";
 import Configurator from "./sections/Configurator";
-import History  from "./sections/History";
+import History      from "./sections/History";
 import Experience   from "./sections/Experience";
 
 // Pages
 import CarDetailPage from "./sections/CarDetailPage";
+import ARPage        from "./sections/ARPage";
 
 // ─────────────────────────────────────────────────────────────
-// Main site layout (everything except CarDetailPage)
+// Main site layout
 // ─────────────────────────────────────────────────────────────
 function MainSite() {
   const [introComplete, setIntroComplete] = useState(false);
@@ -68,9 +69,6 @@ function MainSite() {
     setTimeout(() => setLogoReady(true), 100);
   }, []);
 
-  // Navigate to car detail page on "Explore Car" click
-  // We import useNavigate inside Models via router context — no state needed here
-
   return (
     <>
       <ScrollProgressBar scaleX={scaleX} />
@@ -109,15 +107,15 @@ function MainSite() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Root — BrowserRouter wraps everything so all pages
-// have access to useNavigate / useParams
+// Root
 // ─────────────────────────────────────────────────────────────
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/"         element={<MainSite />} />
-        <Route path="/car/:id"  element={<CarDetailPage />} />
+        <Route path="/"        element={<MainSite />} />
+        <Route path="/car/:id" element={<CarDetailPage />} />
+        <Route path="/ar/:id"  element={<ARPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -8,6 +8,7 @@ import {
 import CarViewer from "./CarViewer";
 import { cars } from "../constants/carData";
 import TechnicalDossier from "./TechnicalDossier";
+import ARViewer from "./ARViewer";
 
 const GOLD       = "rgba(200,169,110,";
 const GOLD_SOLID = "#C8A96E";
@@ -196,14 +197,21 @@ function StatsChart({ car, isOpen, onClose }) {
   );
 }
 
-export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
-  const [carIndex,       setCarIndex]       = useState(0);
-  const [bodyColor,      setBodyColor]      = useState(cars[0].colorOptions[0].hex);
-  const [direction,      setDirection]      = useState(1);
-  const [modelKey,       setModelKey]       = useState(0);
-  const [isAnimating,    setIsAnimating]    = useState(false);
-  const [chartOpen,      setChartOpen]      = useState(false);
-  const [dossierOpen,    setDossierOpen]    = useState(false);
+export default function DriveModal({ isOpen, onClose, onEnterCockpit, initialCarId }) {
+  const getInitialIndex = () => {
+    if (!initialCarId) return 0;
+    const idx = cars.findIndex(c => c.id === initialCarId);
+    return idx >= 0 ? idx : 0;
+  };
+
+  const [carIndex,    setCarIndex]    = useState(getInitialIndex);
+  const [bodyColor,   setBodyColor]   = useState(cars[getInitialIndex()].colorOptions[0].hex);
+  const [direction,   setDirection]   = useState(1);
+  const [modelKey,    setModelKey]    = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [chartOpen,   setChartOpen]   = useState(false);
+  const [dossierOpen, setDossierOpen] = useState(false);
+  const [arOpen,      setArOpen]      = useState(false);
 
   const overlayRef = useRef(null);
   const panelRef   = useRef(null);
@@ -213,6 +221,17 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
   const statRefs   = useRef([]);
 
   const car = cars[carIndex];
+
+  // When modal opens with a specific car, jump to it
+  useEffect(() => {
+    if (isOpen && initialCarId) {
+      const idx = cars.findIndex(c => c.id === initialCarId);
+      if (idx >= 0 && idx !== carIndex) {
+        setCarIndex(idx);
+        setModelKey(k => k + 1);
+      }
+    }
+  }, [isOpen, initialCarId]);
 
   useEffect(() => { setBodyColor(car.colorOptions[0].hex); }, [carIndex]);
   useEffect(() => { setChartOpen(false); }, [carIndex]);
@@ -232,6 +251,7 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
         );
     } else {
       setChartOpen(false);
+      setArOpen(false);
       gsap.timeline({ onComplete: () => gsap.set(overlayRef.current, { display: "none" }) })
         .to(panelRef.current, { y: 30, opacity: 0, scale: 0.96, duration: 0.35, ease: "power2.in" })
         .to(overlayRef.current, { opacity: 0, duration: 0.25, ease: "power2.in" }, "-=0.15");
@@ -268,14 +288,15 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
       if (e.key === "ArrowLeft")  handlePrev();
       if (e.key === "ArrowRight") handleNext();
       if (e.key === "Escape") {
-        if (dossierOpen) { setDossierOpen(false); return; }
-        if (chartOpen)   { setChartOpen(false);   return; }
+        if (arOpen)      { setArOpen(false);      return; }
+        if (dossierOpen) { setDossierOpen(false);  return; }
+        if (chartOpen)   { setChartOpen(false);    return; }
         onClose();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, carIndex, isAnimating, chartOpen, dossierOpen]);
+  }, [isOpen, carIndex, isAnimating, chartOpen, dossierOpen, arOpen]);
 
   return (
     <>
@@ -499,6 +520,7 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
               {/* Button row */}
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <ManifestoButton onClick={() => setDossierOpen(true)} />
+                <ARButton onClick={() => setArOpen(true)} />
                 <CockpitButton onEnterCockpit={onEnterCockpit} car={car} />
               </div>
             </div>
@@ -506,10 +528,17 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit }) {
         </div>
       </div>
 
-      {/* Dossier overlay — rendered outside the modal panel so it's truly full-screen */}
+      {/* Dossier overlay */}
       {dossierOpen && (
         <TechnicalDossier car={car} onClose={() => setDossierOpen(false)} />
       )}
+
+      {/* AR overlay */}
+      <ARViewer
+        isOpen={arOpen}
+        onClose={() => setArOpen(false)}
+        car={car}
+      />
     </>
   );
 }
@@ -562,6 +591,36 @@ function ManifestoButton({ onClick }) {
         >
           <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
+      </span>
+    </button>
+  );
+}
+
+function ARButton({ onClick }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        fontFamily: "var(--font-orbitron,'Orbitron',sans-serif)",
+        fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase",
+        padding: "12px 22px",
+        border: `1px solid rgba(96,165,250,${hovered ? "0.6" : "0.25"})`,
+        color: `rgba(96,165,250,${hovered ? "1" : "0.6"})`,
+        background: hovered ? "rgba(96,165,250,0.08)" : "transparent",
+        cursor: "pointer", transition: "all 0.3s cubic-bezier(0.76,0,0.24,1)",
+        whiteSpace: "nowrap",
+        boxShadow: hovered ? "0 0 20px rgba(96,165,250,0.1)" : "none",
+      }}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        View in AR
       </span>
     </button>
   );
