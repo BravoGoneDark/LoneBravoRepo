@@ -9,6 +9,7 @@ import CarViewer from "./CarViewer";
 import { cars } from "../constants/carData";
 import TechnicalDossier from "./TechnicalDossier";
 import ARViewer from "./ARViewer";
+import CockpitSim from "./CockpitSim";
 
 const GOLD       = "rgba(200,169,110,";
 const GOLD_SOLID = "#C8A96E";
@@ -212,6 +213,7 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit, initialCar
   const [chartOpen,   setChartOpen]   = useState(false);
   const [dossierOpen, setDossierOpen] = useState(false);
   const [arOpen,      setArOpen]      = useState(false);
+  const [cockpitOpen, setCockpitOpen] = useState(false);
 
   const overlayRef = useRef(null);
   const panelRef   = useRef(null);
@@ -285,6 +287,7 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit, initialCar
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e) => {
+      if (cockpitOpen) return;
       if (e.key === "ArrowLeft")  handlePrev();
       if (e.key === "ArrowRight") handleNext();
       if (e.key === "Escape") {
@@ -521,7 +524,7 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit, initialCar
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <ManifestoButton onClick={() => setDossierOpen(true)} />
                 <ARButton onClick={() => setArOpen(true)} />
-                <CockpitButton onEnterCockpit={onEnterCockpit} car={car} />
+                <CockpitButton onClick = {() => setCockpitOpen(true)} />
               </div>
             </div>
           </div>
@@ -537,6 +540,11 @@ export default function DriveModal({ isOpen, onClose, onEnterCockpit, initialCar
       <ARViewer
         isOpen={arOpen}
         onClose={() => setArOpen(false)}
+        car={car}
+      />
+      <CockpitSim
+        isOpen={cockpitOpen}
+        onClose={() => setCockpitOpen(false)}
         car={car}
       />
     </>
@@ -626,10 +634,10 @@ function ARButton({ onClick }) {
   );
 }
 
-function CockpitButton({ onEnterCockpit, car }) {
+function CockpitButton({ onClick}) {
   const [hovered, setHovered] = useState(false);
   return (
-    <button onClick={() => onEnterCockpit?.(car)}
+    <button onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
