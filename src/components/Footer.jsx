@@ -17,10 +17,9 @@ import { motion }              from "framer-motion";
 // ─────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-  { label: "Models",      href: "#models"       },
-  { label: "Configure",   href: "#configurator" },
-  { label: "Performance", href: "#performance"  },
-  { label: "Experience",  href: "#experience"   },
+  { label: "Models",    href: "#models"      },
+  { label: "History",   href: "#history"     },
+  { label: "Experience", href: "#experience" },
 ];
 
 const SOCIAL_LINKS = [
@@ -55,9 +54,19 @@ const SOCIAL_LINKS = [
 // SMOOTH SCROLL HELPER (mirrors Navbar behaviour)
 // ─────────────────────────────────────────────────────────────
 
+import { gsap } from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollToPlugin);
+
 function scrollToSection(href) {
   const target = document.querySelector(href);
-  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!target) return;
+  gsap.to(window, {
+    duration: 1.4,
+    scrollTo: { y: target, offsetY: 80 },
+    ease: "power3.inOut",
+  });
 }
 
 // ─────────────────────────────────────────────────────────────

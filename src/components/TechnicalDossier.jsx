@@ -251,9 +251,47 @@ function Supremacy({ car }) {
 // ── Section: MATRIX ───────────────────────────────────────────────────────────
 function Matrix({ car }) {
   const [radarMode, setRadarMode] = useState("core");
-  const coreData    = car.radarStats.map((s) => ({ ...s, name: s.axis }));
+  const containerRef = useRef(null);
+  const [dims, setDims] = useState({ w: 0, h: 0 });
+
+  const coreData     = car.radarStats.map((s) => ({ ...s, name: s.axis }));
   const extendedData = car.dossier.dossierRadar.map((s) => ({ ...s, name: s.axis }));
-  const chartData = radarMode === "core" ? coreData : extendedData;
+  const chartData    = radarMode === "core" ? coreData : extendedData;
+  const radarStartAngle = 90;
+  const radarStep       = chartData.length > 0 ? 360 / chartData.length : 0;
+  const radarEndAngle   = radarStartAngle - 360 + radarStep;
+
+  const renderRadarTick = ({ payload, x, y, cx, cy }) => {
+    const labelX = x + (x > cx ? 8 : x < cx ? -8 : 0);
+    const labelY = y + (y > cy ? 8 : y < cy ? -8 : 0);
+    const anchor = x > cx + 4 ? "start" : x < cx - 4 ? "end" : "middle";
+
+    return (
+      <text
+        x={labelX}
+        y={labelY}
+        textAnchor={anchor}
+        dominantBaseline="central"
+        style={{
+          fontFamily: "var(--font-orbitron,'Orbitron',sans-serif)",
+          fontSize: 8,
+          fill: `${BLUE_DIM}0.6)`,
+        }}
+      >
+        {payload.value}
+      </text>
+    );
+  };
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const ro = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      if (width > 0 && height > 0) setDims({ w: Math.floor(width), h: Math.floor(height) });
+    });
+    ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", height: "100%", overflow: "hidden" }}>
@@ -289,12 +327,20 @@ function Matrix({ car }) {
           </div>
         </div>
 
-        {/* Chart */}
-        <div style={{ flex: 1, minHeight: 0 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={chartData} margin={{ top: 16, right: 36, bottom: 16, left: 36 }}>
+        {/* Chart — measured via ResizeObserver, no ResponsiveContainer */}
+        <div ref={containerRef} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
+          {dims.w > 0 && dims.h > 0 && (
+            <RadarChart
+              key={`${car.id}-${radarMode}-${chartData.length}`}
+              width={dims.w}
+              height={dims.h}
+              data={chartData}
+              startAngle={radarStartAngle}
+              endAngle={radarEndAngle}
+              margin={{ top: 30, right: 80, bottom: 30, left: 80 }}
+            >
               <defs>
-                <radialGradient id="dossierFill" cx="50%" cy="50%" r="50%">
+                <radialGradient id={ 'dossierFill -${car.id}' } cx="50%" cy="50%" r="50%">
                   <stop offset="0%"   stopColor={BLUE_S} stopOpacity={0.2} />
                   <stop offset="100%" stopColor={BLUE_S} stopOpacity={0.02} />
                 </radialGradient>
@@ -302,24 +348,24 @@ function Matrix({ car }) {
               <PolarGrid stroke={`${BLUE}0.15)`} strokeDasharray="3 4" />
               <PolarAngleAxis
                 dataKey="axis"
-                tick={{ fontFamily: "var(--font-orbitron,'Orbitron',sans-serif)", fontSize: 8, fill: `${BLUE_DIM}0.6)` }}
+                tick={renderRadarTick}
                 tickLine={false}
               />
               <PolarRadiusAxis domain={[40, 100]} tick={false} axisLine={false} />
               <Radar
                 name={car.name} dataKey="value"
                 stroke={GOLD_S} strokeWidth={1.5}
-                fill="url(#dossierFill)"
+                fill={BLUE_S + "22"}
                 dot={{ r: 3, fill: GOLD_S, strokeWidth: 0 }}
                 activeDot={{ r: 5, fill: GOLD_S, stroke: BLUE_S, strokeWidth: 1.5 }}
               />
               <Tooltip content={<DossierTooltip />} />
             </RadarChart>
-          </ResponsiveContainer>
+          )}
         </div>
       </div>
 
-      {/* Right stat column */}
+      {/* Right stat column — unchanged */}
       <div style={{ padding: "16px 18px", overflowY: "auto" }}>
         <div style={{
           fontFamily: "var(--font-orbitron,'Orbitron',sans-serif)",
@@ -328,8 +374,6 @@ function Matrix({ car }) {
         }}>
           Full Specification
         </div>
-
-        {/* Core stats */}
         <div style={{ marginBottom: "14px" }}>
           <div style={{
             fontFamily: "var(--font-rajdhani,'Rajdhani',sans-serif)",
@@ -363,8 +407,6 @@ function Matrix({ car }) {
             </div>
           ))}
         </div>
-
-        {/* Extended stats */}
         <div>
           <div style={{
             fontFamily: "var(--font-rajdhani,'Rajdhani',sans-serif)",

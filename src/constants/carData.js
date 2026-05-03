@@ -31,11 +31,10 @@ export const cars = [
       { axis: "Torque",       value: 51, rawValue: 412,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 50, rawValue: 260,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 51, rawValue: 5.4,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 53, rawValue: 263,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 53, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 50, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 74, rawValue: 1140, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 53, rawValue: 263,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 50, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -126,11 +125,10 @@ export const cars = [
       { axis: "Torque",       value: 67, rawValue: 500,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 78, rawValue: 317,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 72, rawValue: 3.7,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 67, rawValue: 310,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 76, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 65, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 57, rawValue: 1450, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 67, rawValue: 310,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 82, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -220,11 +218,10 @@ export const cars = [
       { axis: "Torque",       value: 74, rawValue: 580,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 68, rawValue: 295,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 70, rawValue: 3.9,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 70, rawValue: 332,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 70, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 66, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 68, rawValue: 1295, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 70, rawValue: 332,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 55, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -314,11 +311,10 @@ export const cars = [
       { axis: "Torque",       value: 80, rawValue: 650,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 75, rawValue: 309,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 70, rawValue: 3.9,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 84, rawValue: 518,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 88, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 84, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 92, rawValue: 1050, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 84, rawValue: 518,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 72, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -406,11 +402,10 @@ export const cars = [
       { axis: "Torque",       value: 76, rawValue: 590,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 88, rawValue: 330,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 70, rawValue: 3.9,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 82, rawValue: 443,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 83, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 80, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 62, rawValue: 1380, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 82, rawValue: 443,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 65, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -501,11 +496,10 @@ export const cars = [
       { axis: "Torque",       value: 65, rawValue: 470,  rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 81, rawValue: 318,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 77, rawValue: 3.4,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 75, rawValue: 360,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 95, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 92, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 63, rawValue: 1418, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 75, rawValue: 360,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 88, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
@@ -595,11 +589,10 @@ export const cars = [
       { axis: "Torque",       value: 95, rawValue: 1050, rawUnit: "Nm"   },
       { axis: "Top Speed",    value: 50, rawValue: 260,  rawUnit: "km/h" },
       { axis: "Acceleration", value: 95, rawValue: 2.8,  rawUnit: "s"    },
+      { axis: "Pwr/Weight",   value: 78, rawValue: 332,  rawUnit: "hp/t" },
       { axis: "Handling",     value: 82, rawValue: null, rawUnit: null   },
       { axis: "Braking",      value: 90, rawValue: null, rawUnit: null   },
       { axis: "Weight",       value: 50, rawValue: 2295, rawUnit: "kg"   },
-      { axis: "Pwr/Weight",   value: 78, rawValue: 332,  rawUnit: "hp/t" },
-      { axis: "Technology",   value: 95, rawValue: null, rawUnit: null   },
     ],
     dossier: {
       provenance: {
