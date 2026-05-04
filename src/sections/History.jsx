@@ -229,13 +229,13 @@ export default function History() {
             </div>
 
             {/* RIGHT — Image */}
-            <div className="relative flex-shrink-0 overflow-visible" style={{ width: 380 }}>
+            <div className="relative flex-shrink-0 overflow-visible" style={{ width: 320 }}>
               <div
                 className="absolute"
                 style={card.largeImage ? {
-                  top: "-48px", right: "-40px", bottom: "-48px", left: "-20px",
+                  top: "-48px", right: "-40px", bottom: "-48px", left: "-400px"
                 } : {
-                  top: "-24px", right: "-20px", bottom: "-24px", left: "0px",
+                  top: "-12px", right: "-10px", bottom: "-12px", left: "-300px"
                 }}
               >
                 <motion.img
@@ -248,7 +248,7 @@ export default function History() {
                   transition={{ duration: 0.65, delay: WIPE_IN_DURATION, ease: [0.22, 1, 0.36, 1] }}
                   className="w-full h-full object-cover rounded-xl"
                   style={{
-                    transform: "rotate(2deg)",
+                    transform: "rotate(1deg)",
                     boxShadow: "0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,169,110,0.08)",
                   }}
                 />
