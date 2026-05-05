@@ -31,7 +31,8 @@ function MainSite() {
   const [introComplete, setIntroComplete] = useState(false);
   const [logoReady,     setLogoReady]     = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
-  const cursorRef = useRef(null);
+  const cursorRef  = useRef(null);
+  const mainDivRef = useRef(null);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -40,6 +41,7 @@ function MainSite() {
     restDelta: 0.001,
   });
 
+  // ── Cursor glow ───────────────────────────────────────────
   useEffect(() => {
     if (!introComplete) return;
     const cleanup = initCursorGlow(cursorRef, [
@@ -48,19 +50,47 @@ function MainSite() {
     return cleanup;
   }, [introComplete]);
 
+  // ── Active section detection — scroll on both window & div
   useEffect(() => {
     if (!introComplete) return;
-    const sections = document.querySelectorAll("section[id]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
-      },
-      { threshold: 0.35 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+
+    const SECTIONS = ["hero", "models", "history", "experience"];
+
+    const detect = () => {
+      const offsets = SECTIONS.map(id => {
+        const el = document.getElementById(id);
+        if (!el) return { id, top: Infinity };
+        return { id, top: Math.abs(el.getBoundingClientRect().top) };
+      });
+      const closest = offsets.reduce((a, b) => a.top < b.top ? a : b);
+      setActiveSection(closest.id);
+    };
+
+    // Listen on both window and the motion div — whichever is scrolling
+    window.addEventListener("scroll", detect, { passive: true });
+    const div = mainDivRef.current;
+    if (div) div.addEventListener("scroll", detect, { passive: true });
+
+    // Run once immediately so initial state is correct
+    detect();
+
+    return () => {
+      window.removeEventListener("scroll", detect);
+      if (div) div.removeEventListener("scroll", detect);
+    };
+  }, [introComplete]);
+
+  // ── Hash scroll — when returning from car detail page ─────
+  useEffect(() => {
+    if (!introComplete) return;
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) setTimeout(() => {
+        const y = target.getBoundingClientRect().top + window.scrollY - 50;
+        window.scrollTo({ top: y, behavior: "smooth" });
+        window.history.replaceState(null, "", "/");
+      }, 800);
+    }
   }, [introComplete]);
 
   const handleIntroComplete = useCallback(() => {
@@ -81,6 +111,7 @@ function MainSite() {
       </AnimatePresence>
 
       <motion.div
+        ref={mainDivRef}
         initial={{ opacity: 0, y: "100vh", borderRadius: "24px 24px 0 0" }}
         animate={{
           opacity:      introComplete ? 1 : 0,

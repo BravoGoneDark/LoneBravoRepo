@@ -64,7 +64,7 @@ function scrollToSection(href) {
   if (!target) return;
   gsap.to(window, {
     duration: 1.4,
-    scrollTo: { y: target, offsetY: 80 },
+    scrollTo: { y: target, offsetY: 50 },
     ease: "power3.inOut",
   });
 }

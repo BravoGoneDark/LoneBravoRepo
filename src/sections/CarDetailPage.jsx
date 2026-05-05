@@ -8,6 +8,7 @@ import StatBar                                  from "../components/StatBar";
 import Navbar                                   from "../components/Navbar";
 import DriveModal                               from "../components/DriveModal";
 import ARViewer                                 from "../components/ARViewer";
+import CockpitSim                               from "../components/CockpitSim";
 
 // ─── Stat range across fleet ─────────────────────────────────
 function buildStatRanges(carList) {
@@ -178,7 +179,8 @@ export default function CarDetailPage() {
   const [muted,         setMuted]         = useState(false);
   const [driveOpen,     setDriveOpen]     = useState(false);
   const [arOpen,        setArOpen]        = useState(false);
-  const [cockpitOpen,   setCockpitOpen]   = useState(false); // placeholder for CockpitSim
+  const [cockpitOpen,   setCockpitOpen]   = useState(false); 
+  const [commissionOpen, setCommissionOpen] = useState(false);
 
   const audioRef = useRef(null);
 
@@ -237,7 +239,7 @@ export default function CarDetailPage() {
         }} />
 
         {/* Navbar */}
-        <Navbar activeSection="" />
+        <Navbar activeSection="" onNavLinkClick={(href) => navigate(`/${href}`)} />
 
         {/* ── 2-row layout ─────────────────────────── */}
         <div className="relative z-10 h-full flex flex-col pt-14 overflow-hidden">
@@ -368,6 +370,7 @@ export default function CarDetailPage() {
                   style={{ background: accent, color: "#0A0A0A", border: `1px solid ${accent}` }}
                   onMouseEnter={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = accent; }}
                   onMouseLeave={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = "#0A0A0A"; }}
+                  onClick={() => setCommissionOpen(true)}
                 >
                   Commission Yours
                 </button>
@@ -449,6 +452,86 @@ export default function CarDetailPage() {
         onClose={() => setArOpen(false)}
         car={car}
       />
+       {/* CockpitSim — Interior View */}
+      <CockpitSim
+        isOpen={cockpitOpen}
+        onClose={() => setCockpitOpen(false)}
+        car={car}
+      />
+
+      {/* Commission Yours — Coming Soon modal */}
+      {commissionOpen && (
+        <motion.div
+          className="fixed inset-0 z-[200] flex items-center justify-center"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={() => setCommissionOpen(false)}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
+
+          {/* Panel */}
+          <motion.div
+            className="relative max-w-md w-full mx-6 text-center"
+            initial={{ opacity: 0, y: 32, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0,  scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            onClick={e => e.stopPropagation()}
+            style={{
+              background:   "rgba(10,10,10,0.85)",
+              border:       `1px solid ${accent}33`,
+              boxShadow:    `0 0 80px ${accent}18, inset 0 1px 0 ${accent}22`,
+              padding:      "52px 44px",
+            }}
+          >
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-10 h-px" style={{ background: accent }} />
+            <div className="absolute top-0 left-0 w-px h-10" style={{ background: accent }} />
+            <div className="absolute bottom-0 right-0 w-10 h-px" style={{ background: accent }} />
+            <div className="absolute bottom-0 right-0 w-px h-10" style={{ background: accent }} />
+
+            {/* Icon */}
+            <div className="flex justify-center mb-6">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke={accent} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </div>
+
+            <p className="font-orbitron text-[9px] tracking-[0.5em] uppercase mb-4"
+              style={{ color: `${accent}88` }}>
+              Commission Programme
+            </p>
+
+            <h2 className="font-orbitron font-black text-white text-xl leading-tight mb-5"
+              style={{ letterSpacing: "-0.01em" }}>
+              Perfection<br />Takes Its Time.
+            </h2>
+
+            <p className="font-rajdhani text-sm leading-relaxed mb-8"
+              style={{ color: "rgba(255,255,255,0.35)" }}>
+              Every bespoke {car.name} is a dialogue between desire and craft.
+              Our atelier is preparing to receive the most discerning of commissions —
+              a process worthy of the machine you intend to create.
+            </p>
+
+            <p className="font-orbitron text-[10px] tracking-[0.3em] uppercase mb-8"
+              style={{ color: accent }}>
+              — Arriving Soon —
+            </p>
+
+            <button
+              onClick={() => setCommissionOpen(false)}
+              className="font-orbitron text-[9px] tracking-[0.3em] uppercase px-8 py-2.5 transition-all duration-300"
+              style={{ border: `1px solid ${accent}55`, color: "rgba(255,255,255,0.4)" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.color = accent; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = `${accent}55`; e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+            >
+              Understood
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
     </>
   );
 }

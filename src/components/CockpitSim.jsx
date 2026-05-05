@@ -392,7 +392,7 @@ function ManualGearbox({ config, currentGear }) {
   // R is always shown as decorative last position in bottom row (already in layout for 7-spd)
   // For layouts without R, we add it as a static decoration
 
-  const svgWidth  = cols * 52 + 20;
+  const svgWidth  = cols * 52 + 40;
   const svgHeight = 130;
 
   return (

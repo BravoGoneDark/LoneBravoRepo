@@ -292,7 +292,7 @@ export const cars = [
     price:        "$1,500,000 (1997)",
     image:        "/images/cars/911-gt1-97.jpg",
     model:        "/models/911-gt1.glb",
-    cockpit:      "/images/cockpit/911-gt1-97.jpg",
+    cockpit:      "/images/cockpit/911-gt1-97.avif",
     accentColor:  "#FFFFFF",
     engineSound:      "911-gt1",
     engineCharacter:  "Le Mans-spec twin-turbo six — built to sustain endurance-race speeds for 24 hours straight",
