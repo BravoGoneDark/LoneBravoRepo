@@ -96,7 +96,7 @@ export default function Navbar({ activeSection, onNavLinkClick }) {
     if (!target) return;
     gsap.to(window, {
       duration: 1.4,
-      scrollTo: { y: target, offsetY: 50 },
+      scrollTo: { y: target, offsetY: 5 },
       ease: "power3.inOut",
     });
   };

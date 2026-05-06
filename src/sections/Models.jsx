@@ -296,7 +296,7 @@ export default function Models() {
         if (next) {
           ScrollTrigger.create({
             trigger:  wrapper,
-            start:    () => `top+=${i * cardScrollPx + cardScrollPx * 0.35}px top`,
+            start:      () => `top+=${i === 0 ? 0 : i * cardScrollPx + cardScrollPx * 0.65}px top`,
             end:      () => `top+=${i * cardScrollPx + cardScrollPx}px top`,
             scrub:    0.85,
             onUpdate: (self) => {
@@ -371,7 +371,7 @@ export default function Models() {
     if (!wrapper) return;
     const wrapperTop   = wrapper.getBoundingClientRect().top + window.scrollY;
     const cardScrollPx = window.innerHeight * (CARD_VH / 100);
-    const target       = wrapperTop + idx * cardScrollPx;
+    const target = wrapperTop + (idx === 0 ? window.innerHeight * 0.92 : idx * cardScrollPx + cardScrollPx * 0.7);
     gsap.to(window, {
       duration: 1.4,
       scrollTo: { y: target, autoKill: false },

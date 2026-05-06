@@ -57,13 +57,13 @@ function MainSite() {
     const SECTIONS = ["hero", "models", "history", "experience"];
 
     const detect = () => {
-      const offsets = SECTIONS.map(id => {
+      const entered = SECTIONS.filter(id => {
         const el = document.getElementById(id);
-        if (!el) return { id, top: Infinity };
-        return { id, top: Math.abs(el.getBoundingClientRect().top) };
+        if (!el) return false;
+        return el.getBoundingClientRect().top <= window.innerHeight * 0.15;
       });
-      const closest = offsets.reduce((a, b) => a.top < b.top ? a : b);
-      setActiveSection(closest.id);
+      if (!entered.length) { setActiveSection(SECTIONS[0]); return; }
+      setActiveSection(entered[entered.length - 1]);
     };
 
     // Listen on both window and the motion div — whichever is scrolling
